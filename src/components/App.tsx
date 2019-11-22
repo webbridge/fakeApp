@@ -26,7 +26,7 @@ const App: React.FC<WithSnackbarProps> = props => {
       .then(res => {
         setMessage([res]);
       })
-      .catch(err => {
+      .catch(() => {
         props.enqueueSnackbar("Failed fetching data.", {
           variant: "error",
           anchorOrigin: {
@@ -34,7 +34,6 @@ const App: React.FC<WithSnackbarProps> = props => {
             horizontal: "right"
           }
         });
-        console.error("App -> useEffect", err);
       });
   }, [props]);
 
@@ -55,7 +54,7 @@ const App: React.FC<WithSnackbarProps> = props => {
       .then(res => {
         setMessage([...messages, res]);
       })
-      .catch(err => {
+      .catch(() => {
         props.enqueueSnackbar("Failed fetching data.", {
           variant: "error",
           anchorOrigin: {
@@ -63,7 +62,6 @@ const App: React.FC<WithSnackbarProps> = props => {
             horizontal: "right"
           }
         });
-        console.error("App -> onSubmit", err);
       });
   };
 
