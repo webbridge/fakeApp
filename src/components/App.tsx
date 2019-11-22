@@ -92,6 +92,7 @@ const App: React.FC<WithSnackbarProps> = props => {
             label="Enter your name"
             name="name"
             fullWidth
+            error={!!errors.name}
             inputRef={register({
               required: "Is must be required",
               validate: value =>
@@ -107,6 +108,7 @@ const App: React.FC<WithSnackbarProps> = props => {
             label="Enter your comment"
             multiline
             fullWidth
+            error={!!errors.comment}
             rows="5"
             name="comment"
             margin="normal"
