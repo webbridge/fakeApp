@@ -5,6 +5,7 @@ import { withSnackbar, WithSnackbarProps } from "notistack";
 
 import apiService from "../services/ApiService";
 import { ApiReadModel, ApiUpdateModel, StatusEnum } from "../fakeApi/models";
+import { CommentForm } from "../types";
 
 import Container from "@material-ui/core/Container";
 import List from "@material-ui/core/List";
@@ -16,15 +17,13 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 const App: React.FC<WithSnackbarProps> = props => {
-  const { register, handleSubmit, errors, formState } = useForm();
+  const { register, handleSubmit, errors, formState } = useForm<CommentForm>();
   const [messages, setMessage] = useState<ApiReadModel[]>([]);
 
   useEffect(() => {
     apiService
       .get()
       .then(res => {
-        console.log(props);
-
         setMessage([res]);
       })
       .catch(err => {
@@ -35,10 +34,11 @@ const App: React.FC<WithSnackbarProps> = props => {
             horizontal: "right"
           }
         });
+        console.error("App -> useEffect", err);
       });
   }, [props]);
 
-  const onSubmit = (values: any): void => {
+  const onSubmit = (values: CommentForm) => {
     const result: ApiUpdateModel = {
       ...values,
       status: StatusEnum.Completed,
@@ -63,6 +63,7 @@ const App: React.FC<WithSnackbarProps> = props => {
             horizontal: "right"
           }
         });
+        console.error("App -> onSubmit", err);
       });
   };
 
