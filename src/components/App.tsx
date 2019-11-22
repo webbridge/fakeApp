@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
 import useForm from "react-hook-form";
 import moment from "moment";
+import { withSnackbar, WithSnackbarProps } from "notistack";
 
-import { fakeQuery } from "./fakeApi/fakeQuery";
-import { fakeMutation } from "./fakeApi/fakeMutation";
-import { ApiReadModel, ApiUpdateModel, StatusEnum } from "./fakeApi/models";
+import apiService from "../services/ApiService";
+import { ApiReadModel, ApiUpdateModel, StatusEnum } from "../fakeApi/models";
 
 import Container from "@material-ui/core/Container";
 import List from "@material-ui/core/List";
@@ -15,19 +15,28 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 
-const App: React.FC = () => {
+const App: React.FC<WithSnackbarProps> = props => {
   const { register, handleSubmit, errors, formState } = useForm();
   const [messages, setMessage] = useState<ApiReadModel[]>([]);
 
   useEffect(() => {
-    fakeQuery()
+    apiService
+      .get()
       .then(res => {
+        console.log(props);
+
         setMessage([res]);
       })
       .catch(err => {
-        console.error("Something went wrong", err);
+        props.enqueueSnackbar("Failed fetching data.", {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right"
+          }
+        });
       });
-  }, []);
+  }, [props]);
 
   const onSubmit = (values: any): void => {
     const result: ApiUpdateModel = {
@@ -41,12 +50,19 @@ const App: React.FC = () => {
       )
     };
 
-    fakeMutation(result)
+    apiService
+      .post(result)
       .then(res => {
         setMessage([...messages, res]);
       })
       .catch(err => {
-        console.error("Something went wrong", err);
+        props.enqueueSnackbar("Failed fetching data.", {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right"
+          }
+        });
       });
   };
 
@@ -115,4 +131,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default withSnackbar(App);
